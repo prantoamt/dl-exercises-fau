@@ -1,0 +1,32 @@
+[project]
+name = ""
+version = ""
+description = ""
+authors = [
+    {name = "Pranto Badiuzzaman", email = "prantoamt@gmail.com"},
+]
+dependencies = [
+    "numpy>=1.23.4",
+    "matplotlib>=3.6.1",
+    "tabulate>=0.9.0",
+    "scipy>=1.9.3",
+    "scikit-image>=0.19.3",
+]
+requires-python = ">=3.10"
+license = {text = "MIT"}
+[project.optional-dependencies]
+
+[tool.pdm.scripts]
+start = "python main.py"
+tests = "python NumpyTests.py Bonus"
+format = "python -m black ."
+
+[tool.pdm.dev-dependencies]
+dev = [
+    "black>=22.10.0",
+]
+[build-system]
+requires = ["pdm-pep517>=1.0.0"]
+build-backend = "pdm.pep517.api"
+
+[tool.pdm]
