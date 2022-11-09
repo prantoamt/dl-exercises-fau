@@ -20,8 +20,8 @@ from generator import ImageGenerator
 # spectrum.show()
 
 img_gen = ImageGenerator(
-    file_path="/Users/pranto/Desktop/dl-exercises-fau/ex_0/src_to_implement/exercise_data",
-    label_path="/Users/pranto/Desktop/dl-exercises-fau/ex_0/src_to_implement/Labels.json",
+    file_path="./exercise_data",
+    label_path="./Labels.json",
     shuffle=True,
     rotation=False,
     mirroring=False,
