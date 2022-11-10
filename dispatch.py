@@ -3,6 +3,8 @@ import os
 import re
 from zipfile import ZipFile
 
+# For dispatching all excercise
+
 exercise_files = {
     0: ["generator.py", "main.py", "pattern.py"],
     1: [
