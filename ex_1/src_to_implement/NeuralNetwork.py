@@ -25,16 +25,18 @@ class NeuralNetwork:
         Fetch a tuple (data, label) from data_layer.next(),
         where each row represents an image and each column represents pixel.
         Params ->  None
-        Returns -> last_layer_output_tensor: np.ndarray
+        Returns -> data_tensor: last layer's output tensor: np.ndarray
         '''
         data_tensor, label_tensor = self.data_layer.next()
+        ## Transpose the input_tensor so that we can multiply weight_tensor with the input_tensor later.
+        # Now, each column represents an image and each row represents a pixel.
+        data_tensor = data_tensor.T
+        
         ## Pass the data tensor in each layer of the network.
-        last_layer_output_tensor = None
         for layer in self.layers:
-            last_layer_output_tensor = layer.forward(data_tensor)
-
+            data_tensor = layer.forward(data_tensor)
         # Return last layer's output tensor. which is technically the predictions.
-        return last_layer_output_tensor
+        return data_tensor
 
     def backward(self) -> np.ndarray:
         pass

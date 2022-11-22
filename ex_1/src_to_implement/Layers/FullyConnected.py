@@ -16,21 +16,18 @@ class FullyConnected(BaseLayer):
         self.trainable = True
         ## Weight_tensor's number of rows must be equals to the number of rows of the next layers input_tensor which is 
         ## the output_size in this case.
-        self.weights = np.random.uniform(0,1, output_size) 
-        print(self.weights)
-        self.bais = np.random.uniform(0,1, output_size).T
+        self.weights = np.tile(np.random.uniform(0,1, input_size), (output_size, 1))
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
         '''
         Gets a input_tensor with shape(number_of_samples, pixels).
-        Params -> input_tensor: np.ndarray shape(number_of_samples, ouput_size)
+        Params -> input_tensor: np.ndarray shape(ouput_size, number_of_samples)
         '''
-        ## Transpose the input_tensor so that we can multiply weight_tensor with the input_tensor.
-        data_tensor = input_tensor.T
-        print(self.weights.shape, data_tensor.shape,'===')
-        wx = self.weights.dot(data_tensor)
-        wx_plus_b = wx+self.bais
-        self.output_tensor = wx_plus_b.T
+        wx = self.weights.dot(input_tensor)
+        wx_shape = wx.shape
+        bais = np.tile(np.random.uniform(0,1, wx_shape[1]), (wx_shape[0], 1))
+        wx_plus_b = wx+bais
+        self.output_tensor = wx_plus_b
         # Return the output tensor. This will be the input_tensor forn the next layer.
         return self.output_tensor
 

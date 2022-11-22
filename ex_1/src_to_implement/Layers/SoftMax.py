@@ -11,7 +11,8 @@ class SoftMax(BaseLayer):
         super().__init__()
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
-        pass
+        exponential = np.exp(input_tensor)
+        return exponential / np.sum(exponential)
 
     def backward(self, error_tensor: np.ndarray) -> np.ndarray:
         pass
