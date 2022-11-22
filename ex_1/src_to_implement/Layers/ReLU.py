@@ -11,7 +11,7 @@ class ReLU(BaseLayer):
         super().__init__()
     
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
-        pass
+        return np.maximum(0, input_tensor)
 
     def backward(self, error_tensor: np.ndarray) -> np.ndarray:
         pass

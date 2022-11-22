@@ -15,8 +15,9 @@ class FullyConnected(BaseLayer):
         ## Fully connected layers must be trainable.
         self.trainable = True
         ## Weight_tensor's number of rows must be equals to the number of rows of the next layers input_tensor which is 
-        ## the outpu_size in this case.
+        ## the output_size in this case.
         self.weights = np.random.uniform(0,1, output_size) 
+        print(self.weights)
         self.bais = np.random.uniform(0,1, output_size).T
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
@@ -26,6 +27,7 @@ class FullyConnected(BaseLayer):
         '''
         ## Transpose the input_tensor so that we can multiply weight_tensor with the input_tensor.
         data_tensor = input_tensor.T
+        print(self.weights.shape, data_tensor.shape,'===')
         wx = self.weights.dot(data_tensor)
         wx_plus_b = wx+self.bais
         self.output_tensor = wx_plus_b.T
