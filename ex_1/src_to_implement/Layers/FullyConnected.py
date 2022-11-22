@@ -14,19 +14,19 @@ class FullyConnected(BaseLayer):
         self.optimizer = None
         ## Fully connected layers must be trainable.
         self.trainable = True
-        ## Weight_tensor's number of rows must be equals to the number of rows of the next layers input_tensor which is 
-        ## the output_size in this case. And the column size is the input_size+1.
-        ## The last one column is the biases
-        self.weights = np.tile(np.random.uniform(0,1, input_size+1), (output_size, 1))
+        ## Weight_tensor's number of columns must be equals to the number of columns of the next layers input_tensor which is 
+        ## the output_size in this case. And the row size is the input_size+1.
+        ## The last one row is the biases.
+        self.weights = np.tile(np.random.uniform(0,1, output_size), (input_size+1, 1))
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
         '''
         Gets a input_tensor with shape(pixels, number_of_samples).
         Params -> input_tensor: np.ndarray shape(output_size, number_of_samples)
         '''
-        bias_unit = np.ones((1, input_tensor.shape[1]))
-        input_tensor = np.append(input_tensor, bias_unit, axis=0)
-        self.output_tensor = self.weights.dot(input_tensor)
+        bias_unit = np.ones((input_tensor.shape[0], 1))
+        input_tensor = np.append(input_tensor, bias_unit, axis=1)
+        self.output_tensor = input_tensor.dot(self.weights)
         # Return the output tensor. This will be the input_tensor forn the next layer.
         return self.output_tensor
 

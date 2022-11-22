@@ -27,12 +27,7 @@ class NeuralNetwork:
         Params ->  None
         Returns -> data_tensor: last layer's output tensor: np.ndarray
         '''
-        data_tensor, label_tensor = self.data_layer.next()
-        self.label_tensor = label_tensor.T
-        ## Transpose the input_tensor so that we can multiply weight_tensor with the input_tensor later.
-        # Now, each column represents an image and each row represents a pixel.
-        data_tensor = data_tensor.T
-        
+        data_tensor, self.label_tensor = self.data_layer.next()
         ## Pass the data tensor in each layer of the network.
         for layer in self.layers:
             data_tensor = layer.forward(data_tensor)
