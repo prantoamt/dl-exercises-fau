@@ -21,8 +21,8 @@ class FullyConnected(BaseLayer):
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
         '''
-        Gets a input_tensor with shape(pixels, number_of_samples).
-        Params -> input_tensor: np.ndarray shape(output_size, number_of_samples)
+        Gets a input_tensor with shape(number_of_samples, pixels).
+        Params -> input_tensor: np.ndarray shape(number_of_samples, pixels)
         '''
         bias_unit = np.ones((input_tensor.shape[0], 1))
         input_tensor = np.append(input_tensor, bias_unit, axis=1)
