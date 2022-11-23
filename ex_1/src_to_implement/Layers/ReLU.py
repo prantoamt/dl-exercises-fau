@@ -10,10 +10,10 @@ import numpy as np
 class ReLU(BaseLayer):
     def __init__(self) -> None:
         super().__init__()
-        self.cache = None # for storing the output of ReLU, which will be needed to compute backward propagation later
+        self.cache = None # To store the output of ReLU, which will be needed to compute backward propagation later
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
-        relu_output = np.maximum(0, input_tensor)   # ReLU Activation Function
+        relu_output = np.maximum(0, input_tensor)   # calculate output of the ReLU Activation Function
         self.cache  = np.copy(relu_output)          # stored the output of ReLU for backward propagation
 
         return relu_output
