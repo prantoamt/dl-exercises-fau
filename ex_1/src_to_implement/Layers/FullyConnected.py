@@ -34,6 +34,9 @@ class FullyConnected(BaseLayer):
         output_tensor       = np.dot(input_tensor_merged, self.weights)              # output_tensor = x_final * final_weights = (batch_size, out_size)
         
         return output_tensor
+    
+    def backward(self, error_tensor: np.ndarray) -> np.ndarray:
+        pass
 
     @property
     def optimizer(self) -> Sgd:
@@ -42,6 +45,3 @@ class FullyConnected(BaseLayer):
     @optimizer.setter
     def optimizer(self, value: Sgd) -> None:
         self._optimizer = copy.deepcopy(value)
-
-    def backward(self, error_tensor: np.ndarray) -> np.ndarray:
-        pass
