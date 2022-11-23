@@ -6,6 +6,7 @@
 # Other imports
 import numpy as np
 
+
 class CrossEntropyLoss:
     def __init__(self) -> None:
         pass
