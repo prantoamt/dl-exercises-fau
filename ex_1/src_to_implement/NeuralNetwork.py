@@ -12,22 +12,27 @@ from Layers.Helpers import IrisData
 # Other imports
 import numpy as np
 
+
 class NeuralNetwork:
     def __init__(self, optimizer: Sgd) -> None:
         self.optimizer: Sgd = optimizer
-        self.loss: List[int] = []
-        self.layers: List[Union(FullyConnected, SoftMax, ReLU)] = []
+        self.loss = []
+        self.layers: List[Union(FullyConnected, ReLU, SoftMax)] = []  # here union issue
         self.data_layer: IrisData = None
-        self.loss_layer: CrossEntropyLoss = None
+        self.loss_layer = None
 
     def forward(self) -> np.ndarray:
-        '''
+        """
         Fetch a tuple (data, label) from data_layer.next(),
         where each row represents an image and each column represents pixel.
         Params ->  None
         Returns -> data_tensor: last layer's output tensor: np.ndarray
-        '''
-        data_tensor, self.label_tensor = self.data_layer.next()
+        """
+        data_tensor, label_tensor = self.data_layer.next()
+        ## Transpose the input_tensor so that we can multiply weight_tensor with the input_tensor later.
+        # Now, each column represents an image and each row represents a pixel.
+        data_tensor = data_tensor.T
+
         ## Pass the data tensor in each layer of the network.
         for layer in self.layers:
             data_tensor = layer.forward(data_tensor)

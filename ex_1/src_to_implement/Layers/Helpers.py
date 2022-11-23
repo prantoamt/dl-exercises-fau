@@ -32,12 +32,17 @@ def gradient_check(layers, input_tensor, label_tensor):
 
             numerical_derivative = (upper_error - lower_error) / (2 * epsilon)
 
-            normalizing_constant = max(np.abs(analytical_derivative), np.abs(numerical_derivative))
+            normalizing_constant = max(
+                np.abs(analytical_derivative), np.abs(numerical_derivative)
+            )
 
             if normalizing_constant < 1e-15:
                 difference[i, j] = 0
             else:
-                difference[i, j] = np.abs(analytical_derivative - numerical_derivative) / normalizing_constant
+                difference[i, j] = (
+                    np.abs(analytical_derivative - numerical_derivative)
+                    / normalizing_constant
+                )
     return difference
 
 
@@ -49,7 +54,7 @@ def gradient_check_weights(layers, input_tensor, label_tensor, bias):
         weights = layers[0].weights
     difference = np.zeros_like(weights)
 
-    it = np.nditer(weights, flags=['multi_index'])
+    it = np.nditer(weights, flags=["multi_index"])
     while not it.finished:
         plus_epsilon = weights.copy()
         plus_epsilon[it.multi_index] += epsilon
@@ -96,12 +101,17 @@ def gradient_check_weights(layers, input_tensor, label_tensor, bias):
 
         numerical_derivative = (upper_error - lower_error) / (2 * epsilon)
 
-        normalizing_constant = max(np.abs(analytical_derivative), np.abs(numerical_derivative))
+        normalizing_constant = max(
+            np.abs(analytical_derivative), np.abs(numerical_derivative)
+        )
 
         if normalizing_constant < 1e-15:
             difference[it.multi_index] = 0
         else:
-            difference[it.multi_index] = np.abs(analytical_derivative - numerical_derivative) / normalizing_constant
+            difference[it.multi_index] = (
+                np.abs(analytical_derivative - numerical_derivative)
+                / normalizing_constant
+            )
 
         it.iternext()
     return difference
@@ -136,17 +146,23 @@ class IrisData:
     def __init__(self, batch_size):
         self.batch_size = batch_size
         self._data = load_iris()
-        self._label_tensor = OneHotEncoder(sparse=False).fit_transform(self._data.target.reshape(-1, 1))
+        self._label_tensor = OneHotEncoder(sparse=False).fit_transform(
+            self._data.target.reshape(-1, 1)
+        )
         self._input_tensor = self._data.data
         self._input_tensor /= np.abs(self._input_tensor).max()
 
-        self.split = int(self._input_tensor.shape[0]*(2/3))  # train / test split  == number of samples in train set
+        self.split = int(
+            self._input_tensor.shape[0] * (2 / 3)
+        )  # train / test split  == number of samples in train set
 
-        self._input_tensor, self._label_tensor = shuffle_data(self._input_tensor, self._label_tensor)
-        self._input_tensor_train = self._input_tensor[:self.split, :]
-        self._label_tensor_train = self._label_tensor[:self.split, :]
-        self._input_tensor_test = self._input_tensor[self.split:, :]
-        self._label_tensor_test = self._label_tensor[self.split:, :]
+        self._input_tensor, self._label_tensor = shuffle_data(
+            self._input_tensor, self._label_tensor
+        )
+        self._input_tensor_train = self._input_tensor[: self.split, :]
+        self._label_tensor_train = self._label_tensor[: self.split, :]
+        self._input_tensor_test = self._input_tensor[self.split :, :]
+        self._label_tensor_test = self._label_tensor[self.split :, :]
 
         self._current_forward_idx_iterator = self._forward_idx_iterator()
 
@@ -156,7 +172,7 @@ class IrisData:
         while True:
             this_idx = np.random.choice(idx, self.split, replace=False)
             for i in range(num_iterations):
-                yield this_idx[i * self.batch_size:(i + 1) * self.batch_size]
+                yield this_idx[i * self.batch_size : (i + 1) * self.batch_size]
 
     def next(self):
         idx = next(self._current_forward_idx_iterator)

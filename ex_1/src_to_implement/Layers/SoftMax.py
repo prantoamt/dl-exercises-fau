@@ -6,6 +6,7 @@ from Layers.Base import BaseLayer
 # Other imports
 import numpy as np
 
+
 class SoftMax(BaseLayer):
     def __init__(self) -> None:
         super().__init__()
