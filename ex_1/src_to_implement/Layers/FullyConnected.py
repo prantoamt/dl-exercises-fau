@@ -13,8 +13,8 @@ class FullyConnected(BaseLayer):
     def __init__(self, input_size: int, output_size: int) -> None:
         super().__init__()
 
-        self.trainable   = True  # Fully connected layers must be trainable
-        self.optimizer   = None
+        self.trainable   = True         # Fully connected layers must be trainable
+        self._optimizer  = None
         self.input_size  = input_size
         self.output_size = output_size
 
