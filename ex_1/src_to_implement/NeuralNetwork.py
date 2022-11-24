@@ -1,13 +1,12 @@
 # Python imports
-from typing import List, Union
+import copy
+from typing import Union
 
 # Self imports
-from Optimization.Optimizers import Sgd
 from Layers.FullyConnected import FullyConnected
 from Layers.ReLU import ReLU
 from Layers.SoftMax import SoftMax
-from Optimization.Loss import CrossEntropyLoss
-from Layers.Helpers import IrisData
+from Optimization.Optimizers import Sgd
 
 # Other imports
 import numpy as np
@@ -15,42 +14,52 @@ import numpy as np
 
 class NeuralNetwork:
     def __init__(self, optimizer: Sgd) -> None:
-        self.optimizer: Sgd = optimizer
-        self.loss = []
-        self.layers: List[Union(FullyConnected, ReLU, SoftMax)] = []  # here union issue
-        self.data_layer: IrisData = None
-        self.loss_layer = None
+        self.optimizer    = optimizer
+        self.loss         = []
+        self.layers       = []
+        self.data_layer   = None    # Contains tuple (input tensor, label tensor)
+        self.loss_layer   = None
+        self.input_tensor = None    # To store input tensor
+        self.label_tensor = None    # To store label tensor
 
     def forward(self) -> np.ndarray:
-        """
-        Fetch a tuple (data, label) from data_layer.next(),
-        where each row represents an image and each column represents pixel.
-        Params ->  None
-        Returns -> data_tensor: last layer's output tensor: np.ndarray
-        """
-        data_tensor, label_tensor = self.data_layer.next()
-        ## Transpose the input_tensor so that we can multiply weight_tensor with the input_tensor later.
-        # Now, each column represents an image and each row represents a pixel.
-        data_tensor = data_tensor.T
+        # Fetch the input_tensor, label_tensor from data_layer
+        self.input_tensor, self.label_tensor = self.data_layer.next()
 
-        ## Pass the data tensor in each layer of the network.
+        # Pass the data tensor in each layer of the network
         for layer in self.layers:
-            data_tensor = layer.forward(data_tensor)
-        # Return last layer's output tensor. which is technically the predictions.
-        return data_tensor
+            self.input_tensor = layer.forward(self.input_tensor)
+        
+        # Return last layer's (loss layer) output, which is technically the Cross Entropy Loss
+        loss_output = self.loss_layer.forward(self.input_tensor, self.label_tensor)
+
+        return loss_output
 
     def backward(self) -> np.ndarray:
-        pass
+        # Propagate backward by starting from loss layer
+        error_tensor = self.loss_layer.backward(self.label_tensor)
+
+        # Pass the error_tensor found from loss_layer in each layer of the network reversely
+        for layer in self.layers[::-1]:
+            error_tensor = layer.backward(error_tensor)
 
     def append_layer(self, layer: Union[FullyConnected, ReLU, SoftMax]) -> None:
-        # If the layer is trainable, sett the network's optimizer as layer's optimizer.
-        # Append the layers
+        # If the layer is trainable, set the network's optimizer as layer's optimizer
         if layer.trainable:
-            layer.optimizer = self.optimizer
+            layer.optimizer = copy.deepcopy(self.optimizer)
+        
         self.layers.append(layer)
 
     def train(self, iterations: int) -> None:
-        pass
+        for _ in range(iterations):
+            loss_output = self.forward()    # Forward Propagation
+            self.loss.append(loss_output)   # Store the loss
+            self.backward()                 # Backward Propagation
 
     def test(self, input_tensor: np.ndarray) -> None:
-        pass
+        output_tensor = input_tensor
+
+        for layer in self.layers:
+            output_tensor = layer.forward(output_tensor)    # Forward Propagation
+        
+        return output_tensor
