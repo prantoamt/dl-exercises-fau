@@ -41,6 +41,7 @@ class FullyConnected(BaseLayer):
     @property
     def optimizer(self) -> Sgd:
         return self._optimizer
+        
 
     @optimizer.setter
     def optimizer(self, value: Sgd) -> None:
