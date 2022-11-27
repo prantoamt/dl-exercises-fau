@@ -35,12 +35,7 @@ class Pattern(ABC):
 
 
 class Circle(Pattern):
-    def __init__(
-        self, 
-        resolution: int, 
-        radius: int, 
-        position: Tuple[int, int]
-        ) -> None:
+    def __init__(self, resolution: int, radius: int, position: Tuple[int, int]) -> None:
         super().__init__()
         self.resolution = resolution
         self.radius = radius
@@ -69,9 +64,7 @@ class Checker(Pattern):
             )
 
     def draw(self) -> np.ndarray:
-        total_boxes_for_one_row_in_pair = (
-            int((self.resolution / self.tile_size) / 2)
-            )
+        total_boxes_for_one_row_in_pair = int((self.resolution / self.tile_size) / 2)
         black_box = np.zeros((self.tile_size, self.tile_size), dtype=int)
         white_box = np.ones((self.tile_size, self.tile_size), dtype=int)
         b_w_box_in_pair = np.concatenate((black_box, white_box), axis=1)
@@ -93,12 +86,12 @@ class Spectrum(Pattern):
         self.output = None
 
     def draw(self) -> np.ndarray:
-        '''
+        """
         The First channel of the 3D array is R, 2nd Channel is Green and 3rd is
-        Blue. 
+        Blue.
         Our desired spectrum requires densed red color on the right, densed Green
         Color on bottom and Densed Blue color on the left.
-        '''
+        """
         spectrum_array = np.zeros([self.resolution, self.resolution, 3])
         ##Creates a red channed which have densed red color at the right
         spectrum_array[:, :, 0] = np.linspace(0, 1, self.resolution)
