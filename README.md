@@ -13,7 +13,7 @@
 
 ## Welcome
 ----------------------------
-Hello! Welcome to the **Deep Learning Exercises** repository. This `readme.md` file will guide you to run the projects inside this repository on your local machine. In order to run the projects, please pursue the following steps. I assume you are using `unix based operating system` and you have `python 3.8` installed. We have used [pdm python](https://pdm.fming.dev/latest/) as package manager. We have created few custom commands using pdm python as well. Therefore, it is strongly recommended to install `pdm python` beforehand to make life easier. Installation guidelines can be found on pdm python's website.
+Hello! Welcome to the **Deep Learning Exercises** repository. This `readme.md` file will guide you to run the exercises inside this repository on your local machine. In order to run the exercises, please pursue the following steps. We assume you are using `unix based operating system` and you have `python 3.8` installed. We have used [pdm python](https://pdm.fming.dev/latest/) as package manager. We have created few custom commands using pdm python as well. Therefore, it is strongly recommended to install `pdm python` beforehand to make life easier. Installation guidelines can be found on pdm python's website.
 
 ## Install Pdm Python
 ---------------------------
