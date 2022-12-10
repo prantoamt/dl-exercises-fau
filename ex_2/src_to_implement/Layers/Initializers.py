@@ -10,13 +10,11 @@ import numpy as np
 
 class Initializer(ABC):
     """
-    Abstruct class that will force the subsclasses to override the abstruct methods
+    Base abstruct class that will force the subsclasses to define the abstruct methods
     """
 
     @abstractmethod
-    def initializer(
-        self, weights_shape: Tuple, fan_in: int, fan_out: int
-    ) -> np.ndarray:
+    def initialize(self, weights_shape: Tuple, fan_in: int, fan_out: int) -> np.ndarray:
         """
         Returns the initialized tensor of desired size.
         """
@@ -32,28 +30,54 @@ class Constant(Initializer):
         super().__init__()
         self.constant = constant
 
-    def initializer(
-        self, weights_shape: Tuple, fan_in: int, fan_out: int
-    ) -> np.ndarray:
+    def initialize(self, weights_shape: Tuple, fan_in: int, fan_out: int) -> np.ndarray:
         return super().initializer(weights_shape, fan_in, fan_out)
 
 
 class UniformRandom(Initializer):
-    def initializer(
-        self, weights_shape: Tuple, fan_in: int, fan_out: int
-    ) -> np.ndarray:
-        return super().initializer(weights_shape, fan_in, fan_out)
+    def __init__(self) -> None:
+        super().__init__()
+
+    def initialize(self, weights_shape: Tuple, fan_in: int, fan_out: int) -> np.ndarray:
+        """
+        Initializes weights with random numbers that belongs to
+        uniform destribution from [0,1)
+        """
+        pass
 
 
 class Xavier(Initializer):
-    def initializer(
-        self, weights_shape: Tuple, fan_in: int, fan_out: int
-    ) -> np.ndarray:
-        return super().initializer(weights_shape, fan_in, fan_out)
+    def __init__(self) -> None:
+        super().__init__()
+
+    def initialize(self, weights_shape: Tuple, fan_in: int, fan_out: int) -> np.ndarray:
+        """
+        Initializes weights with random numbers that belongs to
+        the uniform destribution range created by Xaviar/Glorot equation.
+        @Params:
+            weight_shape: the desired shape of to be initialized weight_tensor
+            fan_in: input size of the layer -> int
+            fan_out: output size of the layer -> int
+        Explaination:
+            sigma = sqrt( 2 / fan_out + fan_in )
+            The weight_tensor will have random numbers that belongs to the
+            uniform destribution from [0, sigma).
+        """
+        pass
 
 
 class He(Initializer):
-    def initializer(
-        self, weights_shape: Tuple, fan_in: int, fan_out: int
-    ) -> np.ndarray:
-        return super().initializer(weights_shape, fan_in, fan_out)
+    def initialize(self, weights_shape: Tuple, fan_in: int, fan_out: int) -> np.ndarray:
+        """
+        Initializes weights with random numbers that belongs to
+        the uniform destribution range created by He equation.
+        @Params:
+            weight_shape: the desired shape of to be initialized weight_tensor
+            fan_in: input size of the layer -> int
+            fan_out: output size of the layer -> int
+        Explaination:
+            sigma = sqrt( 2 / fan_in )
+            The weight_tensor will have random numbers that belongs to the
+            uniform destribution from [0, sigma).
+        """
+        pass
