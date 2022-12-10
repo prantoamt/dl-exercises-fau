@@ -42,6 +42,10 @@ class UniformRandom(Initializer):
         """
         Initializes weights with random numbers that belongs to
         uniform destribution from [0,1)
+         @Params:
+            weight_shape: the desired shape of to be initialized weight_tensor
+            fan_in: input size of the layer -> int
+            fan_out: output size of the layer -> int
         """
         pass
 
