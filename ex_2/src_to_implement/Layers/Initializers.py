@@ -47,7 +47,7 @@ class UniformRandom(Initializer):
             fan_in: input size of the layer -> int
             fan_out: output size of the layer -> int
         """
-        pass
+        return np.random.rand(fan_in, fan_out)
 
 
 class Xavier(Initializer):
