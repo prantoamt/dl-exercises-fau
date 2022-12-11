@@ -92,9 +92,9 @@ class Adam(Optimizer):
         gradient(k) denotes to the gradient of k's iteration.
         Assume the very first momentum v(0) is ZERO and r(0) = 0
         """
-        print(
-            f"v({self.iter-1}) = {self.v_k}, r({self.iter-1}) = {self.r_k}, w({self.iter}) = {weight_tenson}"
-        )
+        # print(
+        #     f"v({self.iter-1}) = {self.v_k}, r({self.iter-1}) = {self.r_k}, w({self.iter}) = {weight_tenson}"
+        # )
         self.v_k = self.mu * self.v_k + ((1 - self.mu) * gradient_tensor)
         self.r_k = self.rho * self.r_k + ((1 - self.rho) * gradient_tensor**2)
         v_k_hat = self.v_k / (1.0 - self.mu**self.iter)
@@ -103,8 +103,8 @@ class Adam(Optimizer):
             self.learning_rate
             * (v_k_hat / (np.sqrt(r_k_hat) + np.finfo(np.float64).eps))
         )
-        print(
-            f"v({self.iter}) = {self.v_k}, r({self.iter}) = {self.r_k}, v({self.iter})^ = {v_k_hat}, r({self.iter})^ = {r_k_hat}, w({self.iter}+1) = {w_k_plus_one}"
-        )
+        # print(
+        #     f"v({self.iter}) = {self.v_k}, r({self.iter}) = {self.r_k}, v({self.iter})^ = {v_k_hat}, r({self.iter})^ = {r_k_hat}, w({self.iter}+1) = {w_k_plus_one}"
+        # )
         self.iter += 1
         return w_k_plus_one
