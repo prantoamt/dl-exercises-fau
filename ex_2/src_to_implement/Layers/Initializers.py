@@ -65,9 +65,11 @@ class Xavier(Initializer):
         Explaination:
             sigma = sqrt( 2 / fan_out + fan_in )
             The weight_tensor will have random numbers that belongs to the
-            uniform destribution from [0, sigma).
+            normal destribution from [0, sigma).
         """
-        pass
+        sigma = np.sqrt(2 / (fan_in + fan_out))
+        print(sigma)
+        return np.random.normal(0.0, sigma, (fan_in, fan_out))
 
 
 class He(Initializer):
