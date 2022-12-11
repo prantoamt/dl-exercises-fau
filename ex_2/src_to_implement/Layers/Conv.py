@@ -23,7 +23,7 @@ class Conv(BaseLayer):
         self._gradient_bais = None
 
     def initialize(
-        weight_initializer: Initializer, bias_initializer: Initializer
+        self, weight_initializer: Initializer, bias_initializer: Initializer
     ) -> tuple:
         '''
         Initializes weight and bias tensor with the given weight
@@ -33,7 +33,7 @@ class Conv(BaseLayer):
             bias_initializer -> Initializer
         """
         '''
-        pass
+        self.weights = weight_initializer.initialize()
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
         pass

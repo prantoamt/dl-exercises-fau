@@ -44,4 +44,4 @@ class Flatten(BaseLayer):
     def initialize(
         weight_initializer: Initializer, bias_initializer: Initializer
     ) -> tuple:
-        return super().initialize(bias_initializer)
+        pass
