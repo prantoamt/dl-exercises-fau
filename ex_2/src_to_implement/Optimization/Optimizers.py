@@ -20,6 +20,16 @@ class Optimizer(ABC):
         pass
 
 
+class Sgd(Optimizer):
+    def __init__(self, learning_rate: float) -> None:
+        self.learning_rate = learning_rate
+
+    def calculate_update(
+        self, weight_tensor: np.ndarray, gradient_tensor: np.ndarray
+    ) -> np.ndarray:
+        return weight_tensor - (self.learning_rate * gradient_tensor)
+
+
 class SgdWithMomentum(Optimizer):
     """
     Stochastic gradient decent with momentum.
@@ -29,22 +39,28 @@ class SgdWithMomentum(Optimizer):
         super().__init__()
         self.learning_rate = learning_rate
         self.momentum_rate = momentum_rate
+        self.v_k = 0  ## The initial momentum is ZERO
 
     def calculate_update(
-        weight_tenson: np.ndarray, gradient_tensor: np.ndarray
+        self, weight_tenson: np.ndarray, gradient_tensor: np.ndarray
     ) -> np.ndarray:
         """
         @ Params:
             weight_tenson: old weight tensor -> np.ndarray
             gradient_tensor: gradient with respect to the old weight tensor -> np.ndarray
 
-        v(K) = momentum_rate * v(k-1) - learning_rate * gradient(K).
-        w(K+1) = w(K) + v(K)
-        v(K) denotes to the new gradient with momentum at k's iteration.
-        w(K) denotes to new weights after considering momentum at k's iteration.
-        gradient(K) denotes to the gradient of k's iteration.
+        v(k) = momentum_rate * v(k-1) - learning_rate * gradient(k).
+        w(k+1) = w(k) + v(k)
+        v(k) denotes to the new momentum at k's iteration.
+        w(k) denotes to new weights after considering momentum at k's iteration.
+        gradient(k) denotes to the gradient of k's iteration.
+        Assume the very first momentum v(0) is ZERO
         """
-        pass
+        self.v_k = self.momentum_rate * self.v_k - (
+            self.learning_rate * gradient_tensor
+        )
+        w_k_plus_one = weight_tenson + self.v_k
+        return w_k_plus_one
 
 
 class Adam(Optimizer):
@@ -62,14 +78,14 @@ class Adam(Optimizer):
             weight_tenson: old weight tensor -> np.ndarray
             gradient_tensor: gradient with respect to the old weight tensor -> np.ndarray
 
-        v(K) = mu * v(k-1) + (1 - mu) * gradient(K)
-        r(K) = rho * r(k-1) + (1 - rho) * (gradient(K))^2
-        v(K)hat = v(K) / (1-mu)
-        r(K)hat = r(K) / (1-rho)
-        w(K+1) = w(K) - learning_rate * (v(K)hat / sqrt(r(k)hat)) + eps
+        v(k) = mu * v(k-1) + (1 - mu) * gradient(k)
+        r(k) = rho * r(k-1) + (1 - rho) * (gradient(k))^2
+        v(k)hat = v(k) / (1-mu)
+        r(k)hat = r(k) / (1-rho)
+        w(k+1) = w(k) - learning_rate * (v(k)hat / sqrt(r(k)hat)) + eps
 
-        v(K) denotes to the new gradient with momentum at k's iteration.
-        w(K) denotes to new weights after considering momentum at k's iteration.
-        gradient(K) denotes to the gradient of k's iteration.
+        v(k) denotes to the new gradient with momentum at k's iteration.
+        w(k) denotes to new weights after considering momentum at k's iteration.
+        gradient(k) denotes to the gradient of k's iteration.
         """
         pass
