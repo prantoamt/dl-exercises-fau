@@ -20,7 +20,9 @@ class Flatten(BaseLayer):
             flatten_tensor-> np.ndarray
         Flattens the input tenson to be compatible with fully connected layes.
         The input tensor in this layer is expected to be 4D.
-        For example: (9,3,4,11), where 9 is batch size.
+        For example: (9,3,4,11),
+            where, 9 is batch size. 3 is the chanel number of an image
+            4 is heigh and 11 is width of an image.
         Keeping the batch size same, the function flatten the 4D array and
         returns the result.
         """
