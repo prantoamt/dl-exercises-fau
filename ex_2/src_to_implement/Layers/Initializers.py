@@ -1,6 +1,6 @@
 # Python imports
 from abc import ABC, abstractmethod
-from typing import Tuple, int, Optional
+from typing import Tuple, Optional
 
 # Third party imports
 import numpy as np

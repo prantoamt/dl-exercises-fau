@@ -12,7 +12,7 @@ from Layers.Base import BaseLayer
 class Conv(BaseLayer):
     def __init__(
         self,
-        stride_shape: Union(tuple, int),
+        stride_shape: Union[tuple, int],
         convolution_shape: tuple,
         num_kernels: int,
     ) -> None:

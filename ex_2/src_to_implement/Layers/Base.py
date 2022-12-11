@@ -3,6 +3,7 @@ import copy
 from abc import ABC, abstractmethod
 
 # Third party imports
+import numpy as np
 
 # Self imports
 from Layers.Initializers import Initializer
