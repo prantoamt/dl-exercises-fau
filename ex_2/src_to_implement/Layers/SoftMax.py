@@ -37,6 +37,3 @@ class SoftMax(BaseLayer):
         gradient = np.multiply(self.cache, error_tensor - sum_err_and_class_prob)
 
         return gradient
-    
-    def initialize(weights_initializer: Initializer, bias_initializer: Initializer) -> tuple:
-        pass

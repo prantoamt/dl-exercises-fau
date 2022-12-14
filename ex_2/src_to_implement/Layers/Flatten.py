@@ -40,8 +40,3 @@ class Flatten(BaseLayer):
         was to be compatible with convolution layers.
         """
         return error_tensor.reshape(self.input_tensor.shape)
-
-    def initialize(
-        weight_initializer: Initializer, bias_initializer: Initializer
-    ) -> tuple:
-        pass

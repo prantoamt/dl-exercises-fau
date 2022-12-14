@@ -30,6 +30,3 @@ class ReLU(BaseLayer):
         )  # gradient of the cost with respect to output of ReLU
 
         return gradient
-    
-    def initialize(weights_initializer: Initializer, bias_initializer: Initializer) -> tuple:
-        pass
