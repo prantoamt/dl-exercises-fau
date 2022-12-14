@@ -31,7 +31,9 @@ class Constant(Initializer):
         self.constant = constant
 
     def initialize(self, weights_shape: Tuple, fan_in: int, fan_out: int) -> np.ndarray:
-        return super().initializer(weights_shape, fan_in, fan_out)
+        weight_matrix = np.zeros(weights_shape)
+        weight_matrix = self.constant
+        return weight_matrix
 
 
 class UniformRandom(Initializer):
@@ -47,7 +49,7 @@ class UniformRandom(Initializer):
             fan_in: input size of the layer -> int
             fan_out: output size of the layer -> int
         """
-        return np.random.rand(fan_in, fan_out)
+        return np.random.uniform(0, 1, weights_shape)
 
 
 class Xavier(Initializer):

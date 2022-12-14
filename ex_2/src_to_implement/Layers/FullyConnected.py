@@ -36,7 +36,13 @@ class FullyConnected(BaseLayer):
             weight_initializer -> Initializer
             bias_initializer -> Initializer
         """
-        pass
+        self.weights = weight_initializer(
+            (self.input_size, self.output_size), self.input_size, self.output_size
+        )
+        self.bias = bias_initializer((1, self.output_size), 1, self.output_size)
+        self.weights = np.concatenate(
+            [self.weights, self.bias]
+        )  # final_weights = (in_size+1, out_size) [merged in row]
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
         batch_sz, input_sz = input_tensor.shape  # x = (batch_size, in_size)
