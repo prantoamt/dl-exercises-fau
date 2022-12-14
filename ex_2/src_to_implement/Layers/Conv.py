@@ -74,7 +74,7 @@ class Conv(BaseLayer):
             )
 
         elif len(self.convolution_shape) == 2:
-            self.weights = weight_initializer.initialize(
+            self.weights = weights_initializer.initialize(
                 (
                     self.num_kernels,
                     self.convolution_shape[0],

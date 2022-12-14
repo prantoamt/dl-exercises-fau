@@ -1,20 +1,14 @@
 # Python imports
 import copy
-from abc import ABC, abstractmethod
 
 # Third party imports
 import numpy as np
 
 # Self imports
-from Layers.Initializers import Initializer
 from Optimization.Optimizers import Optimizer
 
 
-class BaseLayer(ABC):
-    """
-    Base abstruct layer that will force abstruct methods to define.
-    """
-
+class BaseLayer:
     def __init__(self) -> None:
         self.trainable = False
         self.weights = None
