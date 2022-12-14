@@ -3,6 +3,7 @@ from typing import Union, Tuple
 
 # Third party imports
 import numpy as np
+from scipy import signal
 
 # Self imports
 from Layers.Initializers import Initializer, UniformRandom
@@ -24,17 +25,23 @@ class Conv(BaseLayer):
         self._gradient_bais: np.ndarray = None
 
         if len(convolution_shape) == 2:
-            self.kernels = np.random.rand(
+            self.weights = np.random.rand(
                 *(num_kernels, convolution_shape[0], convolution_shape[1])
             )
+            self.bias = UniformRandom().initialize(
+                (1, self.num_kernels), 1, self.num_kernels
+            )
         elif len(convolution_shape) == 3:
-            self.kernels = np.random.rand(
+            self.weights = np.random.rand(
                 *(
                     num_kernels,
                     convolution_shape[0],
                     convolution_shape[1],
                     convolution_shape[2],
                 )
+            )
+            self.bias = UniformRandom().initialize(
+                (self.num_kernels), 1, self.num_kernels
             )
 
     def initialize(
@@ -47,38 +54,94 @@ class Conv(BaseLayer):
             weight_initializer -> Initializer
             bias_initializer -> Initializer
         """
-        self.weights = weight_initializer.initialize(
-            self.convolution_shape,
-            np.prod(self.convolution_shape),
-            np.prod(self.convolution_shape[1:]) * self.num_kernels,
-        )
-        self.bais = bias_initializer.initialize(
-            self.convolution_shape,
-            np.prod(self.convolution_shape),
-            np.prod(self.convolution_shape[1:]) * self.num_kernels,
-        )
+        if len(self.convolution_shape) == 3:
+            self.weights = weight_initializer.initialize(
+                (
+                    self.num_kernels,
+                    self.convolution_shape[0],
+                    self.convolution_shape[1],
+                    self.convolution_shape[2],
+                ),
+                self.convolution_shape[0]
+                * self.convolution_shape[1]
+                * self.convolution_shape[2],
+                self.num_kernels
+                * self.convolution_shape[1]
+                * self.convolution_shape[2],
+            )
+            self.bias = bias_initializer.initialize(
+                (self.num_kernels), 1, self.num_kernels
+            )
+
+        elif len(self.convolution_shape) == 2:
+            self.weights = weight_initializer.initialize(
+                (
+                    self.num_kernels,
+                    self.convolution_shape[0],
+                    self.convolution_shape[1],
+                ),
+                self.convolution_shape[0] * self.convolution_shape[1],
+                self.num_kernels * self.convolution_shape[1],
+            )
+            self.bias = bias_initializer.initialize(
+                (1, self.num_kernels), 1, self.num_kernels
+            )
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
         self.input_tensor = input_tensor
 
         if len(self.convolution_shape) == 2:
+            self.batch_size = self.input_tensor.shape[0]
+            self.input_height = self.input_tensor.shape[1]
+            self.input_width = self.input_tensor.shape[2]
+
+            self.output_height = int(np.ceil(self.input_height / self.stride_shape[0]))
+            self.output_width = int(np.ceil(self.input_width / self.stride_shape[0]))
             output_shape = (
-                self.input_tensor.shape[0],
+                self.batch_size,
                 self.num_kernels,
-                int(np.ceil(self.input_tensor.shape[1] / self.stride_shape[0])),
-                int(np.ceil(self.input_tensor.shape[2] / self.stride_shape[0])),
+                self.output_height,
+                self.output_width,
             )
         elif len(self.convolution_shape) == 3:
+            self.batch_size = self.input_tensor.shape[0]
+            self.input_channel = self.input_tensor.shape[1]
+            self.input_height = self.input_tensor.shape[2]
+            self.input_width = self.input_tensor.shape[3]
+            self.output_height = int(np.ceil(self.input_height / self.stride_shape[0]))
+            self.output_width = int(np.ceil(self.input_width / self.stride_shape[0]))
             output_shape = (
-                self.input_tensor.shape[0],
+                self.batch_size,
                 self.num_kernels,
-                int(np.ceil(self.input_tensor.shape[2] / self.stride_shape[0])),
-                int(np.ceil(self.input_tensor.shape[3] / self.stride_shape[0])),
+                self.output_height,
+                self.output_width,
             )
+            self.output_tensor = np.zeros(output_shape)
 
-        output_tensor = np.zeros(output_shape)
-        print(output_shape, "=================")
-        return output_tensor
+        ## Take one image/data
+        ## Take one kernel
+        ## Corelate each channel of the image with each channel of the kernel
+        ##
+        for item in range(self.batch_size):
+            for kernel in range(self.weights.shape[0]):
+                channel_corelation = []
+                for channel in range(self.weights.shape[1]):
+                    channel_corelation.append(
+                        signal.correlate(
+                            self.input_tensor[item, channel],
+                            self.weights[kernel, channel],
+                            mode="same",
+                            method="direct",
+                        )
+                    )
+                channel_corelation = np.stack(channel_corelation)
+                channel_corelation = np.sum(channel_corelation, axis=0)
+
+                self.output_tensor[item, kernel] = (
+                    channel_corelation + +self.bias[kernel]
+                )
+
+        return self.output_tensor
 
     @property
     def gradient_bais(self) -> np.ndarray:
