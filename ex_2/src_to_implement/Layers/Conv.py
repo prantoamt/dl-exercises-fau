@@ -45,7 +45,7 @@ class Conv(BaseLayer):
             )
 
     def initialize(
-        self, weight_initializer: Initializer, bias_initializer: Initializer
+        self, weights_initializer: Initializer, bias_initializer: Initializer
     ) -> Tuple:
         """
         Initializes weight and bias tensor with the given weight
@@ -55,7 +55,7 @@ class Conv(BaseLayer):
             bias_initializer -> Initializer
         """
         if len(self.convolution_shape) == 3:
-            self.weights = weight_initializer.initialize(
+            self.weights = weights_initializer.initialize(
                 (
                     self.num_kernels,
                     self.convolution_shape[0],

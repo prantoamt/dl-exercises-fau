@@ -21,12 +21,6 @@ class BaseLayer(ABC):
         self._gradient_weights = None
         self._optimizer = None
 
-    @abstractmethod
-    def initialize(
-        weights_initializer: Initializer, bias_initializer: Initializer
-    ) -> tuple:
-        pass
-
     @property
     def optimizer(self) -> Optimizer:
         return self._optimizer

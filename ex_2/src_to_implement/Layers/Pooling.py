@@ -5,12 +5,14 @@ from typing import Union
 import numpy as np
 
 # Self imports
+from Layers.Base import BaseLayer
 
 
-class Pooling:
+class Pooling(BaseLayer):
     def __init__(self, stride_shape: Union[tuple, int], pooling_shape: int) -> None:
         self.stride_shape = stride_shape
         self.pooling_shape = pooling_shape
+        self.trainable = False
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
         pass
