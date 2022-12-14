@@ -13,14 +13,9 @@ from Optimization.Optimizers import Optimizer
 
 
 class NeuralNetwork:
-    def __init__(
-        self,
-        optimizer: Optimizer,
-        weight_initializer: Initializer,
-        bias_initializer: Initializer,
-    ) -> None:
+    def __init__(self, optimizer: Optimizer, weights_initializer: Initializer, bias_initializer: Initializer) -> None:
         self.optimizer = optimizer
-        self.weight_initializer = weight_initializer
+        self.weights_initializer = weights_initializer
         self.bias_initializer = bias_initializer
         self.loss = []
         self.layers: FullyConnected = []
@@ -55,7 +50,7 @@ class NeuralNetwork:
         if layer.trainable:
             layer.optimizer = self.optimizer
             layer.initialize(
-                weight_initializer=self.weight_initializer,
+                weights_initializer=self.weights_initializer,
                 bias_initializer=self.bias_initializer,
             )
 

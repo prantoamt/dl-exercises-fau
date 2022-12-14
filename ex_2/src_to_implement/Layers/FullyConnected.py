@@ -22,18 +22,18 @@ class FullyConnected(BaseLayer):
         
         self.input_tensor = None
 
-    def initialize(self, weight_initializer: Initializer, bias_initializer: Initializer) -> None:
+    def initialize(self, weights_initializer: Initializer, bias_initializer: Initializer) -> None:
         """
         Initializes weight and bias tensor with the given weight and bias initializer objects.
         @Params:
-            weight_initializer -> Initializer
+            weights_initializer -> Initializer
             bias_initializer -> Initializer
         Explaination:
             weight = (in_size, out_size)
             bias = (1, out_size)
             final_weights = (in_size+1, out_size) [merged in row]
         """
-        self.weight_init = weight_initializer.initialize((self.input_size, self.output_size), self.input_size, self.output_size)
+        self.weight_init = weights_initializer.initialize((self.input_size, self.output_size), self.input_size, self.output_size)
         self.bias = bias_initializer.initialize((1, self.output_size), 1, self.output_size)
         self.weights = np.concatenate([self.weight_init, self.bias])
     
