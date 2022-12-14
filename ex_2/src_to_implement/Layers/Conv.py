@@ -40,9 +40,7 @@ class Conv(BaseLayer):
                     convolution_shape[2],
                 )
             )
-            self.bias = UniformRandom().initialize(
-                (self.num_kernels), 1, self.num_kernels
-            )
+            self.bias = np.random.rand(num_kernels)
 
     def initialize(
         self, weights_initializer: Initializer, bias_initializer: Initializer
@@ -94,10 +92,9 @@ class Conv(BaseLayer):
             self.batch_size = self.input_tensor.shape[0]
             self.input_height = self.input_tensor.shape[1]
             self.input_width = self.input_tensor.shape[2]
-
             self.output_height = int(np.ceil(self.input_height / self.stride_shape[0]))
-            self.output_width = int(np.ceil(self.input_width / self.stride_shape[0]))
-            output_shape = (
+            self.output_width = int(np.ceil(self.input_width / self.stride_shape[1]))
+            self.output_shape = (
                 self.batch_size,
                 self.num_kernels,
                 self.output_height,
@@ -109,24 +106,28 @@ class Conv(BaseLayer):
             self.input_height = self.input_tensor.shape[2]
             self.input_width = self.input_tensor.shape[3]
             self.output_height = int(np.ceil(self.input_height / self.stride_shape[0]))
-            self.output_width = int(np.ceil(self.input_width / self.stride_shape[0]))
-            output_shape = (
+            self.output_width = int(np.ceil(self.input_width / self.stride_shape[1]))
+            self.output_shape = (
                 self.batch_size,
                 self.num_kernels,
                 self.output_height,
                 self.output_width,
             )
-            self.output_tensor = np.zeros(output_shape)
+        self.output_tensor = np.zeros(self.output_shape)
 
+        ## Algorithm:
         ## Take one image/data
         ## Take one kernel
-        ## Corelate each channel of the image with each channel of the kernel
-        ##
-        for item in range(self.batch_size):
-            for kernel in range(self.weights.shape[0]):
+        ## Take one channel of the kernel
+        ## Perform cross-corelation on each channel of the image with each channel of the kernel
+        ## sum all the channel's cross-corelation result along 0 dimention.
+
+        for item in range(self.batch_size):  ## Take one image/data
+            for kernel in range(self.weights.shape[0]):  ## Take one kernel
                 channel_corelation = []
-                for channel in range(self.weights.shape[1]):
+                for channel in range(self.weights.shape[1]):  ## Take Channel
                     channel_corelation.append(
+                        ## Perform cross-corelation on each channel of the image with each channel of the kernel
                         signal.correlate(
                             self.input_tensor[item, channel],
                             self.weights[kernel, channel],
@@ -134,11 +135,19 @@ class Conv(BaseLayer):
                             method="direct",
                         )
                     )
-                channel_corelation = np.stack(channel_corelation)
-                channel_corelation = np.sum(channel_corelation, axis=0)
+                channel_corelation = np.array(channel_corelation)
+                ## sum all the channel's cross-corelation result along 0 dimention.
+                channel_corelation = channel_corelation.sum(axis=0)
+
+                if len(self.convolution_shape) == 3:
+                    channel_corelation = channel_corelation[
+                        :: self.stride_shape[0], :: self.stride_shape[1]
+                    ]
+                elif len(self.convolution_shape) == 2:
+                    channel_corelation = channel_corelation[:: self.stride_shape[0]]
 
                 self.output_tensor[item, kernel] = (
-                    channel_corelation + +self.bias[kernel]
+                    channel_corelation + self.bias[kernel]
                 )
 
         return self.output_tensor
