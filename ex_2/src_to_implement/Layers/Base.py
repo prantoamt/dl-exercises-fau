@@ -23,7 +23,7 @@ class BaseLayer(ABC):
 
     @abstractmethod
     def initialize(
-        weight_initializer: Initializer, bias_initializer: Initializer
+        weights_initializer: Initializer, bias_initializer: Initializer
     ) -> tuple:
         pass
 

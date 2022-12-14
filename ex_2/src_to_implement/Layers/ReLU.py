@@ -2,6 +2,7 @@
 
 # Self imports
 from Layers.Base import BaseLayer
+from Layers.Initializers import Initializer
 
 # Other imports
 import numpy as np
@@ -29,3 +30,6 @@ class ReLU(BaseLayer):
         )  # gradient of the cost with respect to output of ReLU
 
         return gradient
+    
+    def initialize(weights_initializer: Initializer, bias_initializer: Initializer) -> tuple:
+        pass
