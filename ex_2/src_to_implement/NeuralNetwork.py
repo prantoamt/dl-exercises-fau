@@ -1,10 +1,12 @@
 # Python imports
-from typing import Union
+from typing import Union, Tuple
 
 # Third party imports
 import numpy as np
 
 # Self imports
+from Optimization.Loss import CrossEntropyLoss
+from Layers.Base import BaseLayer
 from Layers.FullyConnected import FullyConnected
 from Layers.ReLU import ReLU
 from Layers.Initializers import Initializer
@@ -13,16 +15,21 @@ from Optimization.Optimizers import Optimizer
 
 
 class NeuralNetwork:
-    def __init__(self, optimizer: Optimizer, weights_initializer: Initializer, bias_initializer: Initializer) -> None:
-        self.optimizer = optimizer
-        self.weights_initializer = weights_initializer
-        self.bias_initializer = bias_initializer
-        self.loss = []
-        self.layers: FullyConnected = []
-        self.data_layer = None  # Contains tuple (input tensor, label tensor)
-        self.loss_layer = None
-        self.input_tensor = None  # To store input tensor
-        self.label_tensor = None  # To store label tensor
+    def __init__(
+        self,
+        optimizer: Optimizer,
+        weights_initializer: Initializer,
+        bias_initializer: Initializer,
+    ) -> None:
+        self.optimizer: Optimizer = optimizer
+        self.weights_initializer: Initializer = weights_initializer
+        self.bias_initializer: Initializer = bias_initializer
+        self.loss: list[int] = []
+        self.layers: list[BaseLayer] = []
+        self.data_layer: Tuple[int] = None
+        self.loss_layer: CrossEntropyLoss = None
+        self.input_tensor: np.ndarray = None
+        self.label_tensor: np.ndarray = None
 
     def forward(self) -> np.ndarray:
         # Fetch the input_tensor, label_tensor from data_layer
