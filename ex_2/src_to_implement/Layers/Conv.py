@@ -152,6 +152,9 @@ class Conv(BaseLayer):
 
         return self.output_tensor
 
+    def backward(self, error_tensor: np.ndarray) -> np.ndarray:
+        pass
+
     @property
     def gradient_bais(self) -> np.ndarray:
         return self._gradient_bais
