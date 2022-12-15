@@ -24,14 +24,10 @@ class Conv(BaseLayer):
         self._gradient_weights: np.ndarray = None
         self._gradient_bais: np.ndarray = None
 
-        if isinstance(self.stride_shape, int):
-            self.stride_shape = (self.stride_shape, self.stride_shape)
-
         if len(convolution_shape) == 2:
             self.weights = np.random.rand(
                 num_kernels, convolution_shape[0], convolution_shape[1]
             )
-            self.bias = np.random.rand(1, self.num_kernels)
         elif len(convolution_shape) == 3:
             self.weights = np.random.rand(
                 num_kernels,
@@ -39,7 +35,7 @@ class Conv(BaseLayer):
                 convolution_shape[1],
                 convolution_shape[2],
             )
-            self.bias = np.random.rand(1, self.num_kernels)
+        self.bias = np.random.rand(num_kernels)
 
     def initialize(
         self, weights_initializer: Initializer, bias_initializer: Initializer
@@ -59,17 +55,15 @@ class Conv(BaseLayer):
                     self.convolution_shape[1],
                     self.convolution_shape[2],
                 ),
-                np.prod(self.convolution_shape),
-                np.prod(
-                    (
-                        self.num_kernels,
-                        self.convolution_shape[1],
-                        self.convolution_shape[2],
-                    )
-                ),
+                self.convolution_shape[0]
+                * self.convolution_shape[1]
+                * self.convolution_shape[2],
+                self.num_kernels
+                * self.convolution_shape[1]
+                * self.convolution_shape[2],
             )
             self.bias = bias_initializer.initialize(
-                (1, self.num_kernels), 1, self.num_kernels
+                (self.num_kernels), self.num_kernels, 1
             )
 
         elif len(self.convolution_shape) == 2:
@@ -79,11 +73,11 @@ class Conv(BaseLayer):
                     self.convolution_shape[0],
                     self.convolution_shape[1],
                 ),
-                np.prod(self.convolution_shape),
-                np.prod((self.num_kernels, self.convolution_shape[1])),
+                self.convolution_shape[0] * self.convolution_shape[1],
+                self.num_kernels * self.convolution_shape[1],
             )
             self.bias = bias_initializer.initialize(
-                (1, self.num_kernels), 1, self.num_kernels
+                (1, self.num_kernels), self.num_kernels, 1
             )
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
@@ -93,12 +87,10 @@ class Conv(BaseLayer):
             self.batch_size = self.input_tensor.shape[0]
             self.input_height = self.input_tensor.shape[1]
             self.input_width = self.input_tensor.shape[2]
-            self.output_height = int(np.ceil(self.input_height / self.stride_shape[0]))
-            self.output_width = int(np.ceil(self.input_width / self.stride_shape[1]))
+            self.output_width = int(np.ceil(self.input_width / self.stride_shape[0]))
             self.output_shape = (
                 self.batch_size,
                 self.num_kernels,
-                self.output_height,
                 self.output_width,
             )
         elif len(self.convolution_shape) == 3:
