@@ -10,7 +10,8 @@ from Layers.Initializers import Initializer
 
 class Flatten(BaseLayer):
     def __init__(self) -> None:
-        self.trainable = False
+        super().__init__()
+        self.input_tensor = None
 
     def forward(self, input_tensor: np.ndarray) -> np.ndarray:
         """
@@ -27,7 +28,7 @@ class Flatten(BaseLayer):
         returns the result.
         """
         self.input_tensor = input_tensor
-        return input_tensor.reshape(len(input_tensor), -1)
+        return input_tensor.reshape(input_tensor.shape[0], -1)
 
     def backward(self, error_tensor: np.ndarray) -> np.ndarray:
         """
@@ -36,7 +37,7 @@ class Flatten(BaseLayer):
         returns:
             un_flatten_tensor-> np.ndarray
         Error is the a flatten tensor comming back from densed or fully connected
-        layers. The function reshapes the error tensor to the previous shape it
-        was to be compatible with convolution layers.
+        layers. The function reshapes the error tensor to the previous shape so that
+        it will be compatible with the convolution layers.
         """
         return error_tensor.reshape(self.input_tensor.shape)
