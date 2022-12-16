@@ -1,4 +1,5 @@
 # Python imports
+import copy
 
 # Third party imports
 import numpy as np
@@ -6,7 +7,7 @@ import numpy as np
 # Self imports
 from Layers.Initializers import Initializer
 from Layers.Base import BaseLayer
-
+from Optimization.Optimizers import Optimizer
 
 class FullyConnected(BaseLayer):
     def __init__(self, input_size: int, output_size: int) -> None:
@@ -21,6 +22,8 @@ class FullyConnected(BaseLayer):
         self.weights = np.concatenate([self.weight_init, self.bias]) # final_weights = (in_size+1, out_size) [merged in row]
         
         self.input_tensor = None
+        self._gradient_weights = None
+        self._optimizer = None
 
     def initialize(self, weights_initializer: Initializer, bias_initializer: Initializer) -> None:
         """
@@ -55,3 +58,19 @@ class FullyConnected(BaseLayer):
             self.weights = self._optimizer.calculate_update(self.weights, self._gradient_weights)  # update the weights
 
         return new_error_tensor[:, : self.input_size]  # to match the previous layers output size, slice the col size accordingly
+    
+    @property
+    def optimizer(self) -> Optimizer:
+        return self._optimizer
+
+    @optimizer.setter
+    def optimizer(self, value: Optimizer) -> None:
+        self._optimizer = copy.deepcopy(value)
+
+    @property
+    def gradient_weights(self) -> np.ndarray:
+        return self._gradient_weights
+
+    @gradient_weights.setter
+    def gradient_weights(self, grad_weights: np.ndarray) -> None:
+        self._gradient_weights = grad_weights
