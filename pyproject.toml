@@ -17,9 +17,11 @@ license = {text = "MIT"}
 [project.optional-dependencies]
 
 [tool.pdm.scripts]
-test_ex_0 = "python ./ex_0/src_to_implement_pranto/NumpyTests.py Bonus"
-test_ex_1 = "python ./ex_1/src_to_implement/NeuralNetworkTests.py Bonus"
-test_ex_2 = "python ./ex_2/src_to_implement/NeuralNetworkTests.py Bonus"
+test_ex_0 = "python ./ex_0/src_to_implement_pranto/NumpyTests.py {args}"
+test_ex_1 = "python ./ex_1/src_to_implement/NeuralNetworkTests.py {args}"
+test_ex_2 = "python ./ex_2/src_to_implement/NeuralNetworkTests.py {args}"
+test = {composite = ["test_ex_0 Bonus",  "test_ex_1 Bonus", "test_ex_2 Bonus"]}
+test_ci = {composite = ["test_ex_0",  "test_ex_1", "test_ex_2"]}
 format = "black ."
 
 [build-system]

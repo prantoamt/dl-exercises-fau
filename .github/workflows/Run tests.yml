@@ -32,6 +32,4 @@ jobs:
         pdm install
     - name: Run tests
       run: |
-        pdm run test_ex_0
-        pdm run test_ex_1
-        pdm run test_ex_2
+        pdm run test_ci
