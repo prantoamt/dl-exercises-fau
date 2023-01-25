@@ -46,10 +46,5 @@ pdm install
 Run the test cases of each excercise by executing the following commands. <br/>
 #### Exercise 0: 
 ```
-pdm run test_ex_0
-```
-
-#### Exercise 1: 
-```
-pdm run test_ex_1
+pdm run test
 ```
