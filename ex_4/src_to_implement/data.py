@@ -32,6 +32,9 @@ class ChallengeDataset(Dataset):
             index = index.tolist()
 
         image_path = str(Path("ex_4/src_to_implement/", self.data.iloc[index, 0]))
+        image_label = torch.as_tensor(
+            [self.data.iloc[index, 1], self.data.iloc[index, 2]]
+        )
         image = imread(image_path)
         image = gray2rgb(image=image)
         train_transform = tv.transforms.Compose(
@@ -47,8 +50,8 @@ class ChallengeDataset(Dataset):
         image = train_transform(image)
         if self._transform:
             image = self._transform(image)
-        image_name = self.data.iloc[index, 0].split("/")[1]
-        return image, image_name
+        print(image_path)
+        return image, image_label
 
 
 def __show_data(
@@ -80,4 +83,4 @@ cd = ChallengeDataset(csv_data, "train")
 
 val_data = torch.utils.data.DataLoader(cd, batch_size=1)
 
-# __show_data(val_data)
+__show_data(val_data)
