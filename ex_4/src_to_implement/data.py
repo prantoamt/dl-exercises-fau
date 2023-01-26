@@ -6,7 +6,6 @@ from pathlib import Path
 from skimage.io import imread
 from skimage.color import gray2rgb
 import torchvision as tv
-import numpy as np
 import matplotlib.pyplot as plt
 
 train_mean = [0.59685254, 0.59685254, 0.59685254]
@@ -50,7 +49,9 @@ class ChallengeDataset(Dataset):
         return image, image_name
 
 
-def __show_data(data_loader: torch.utils.data.DataLoader, num_of_data: int = 6):
+def __show_data(
+    data_loader: torch.utils.data.DataLoader, num_of_data: Optional[int] = 6
+):
     fig = plt.figure()
     position = 1
     iteration = 1
