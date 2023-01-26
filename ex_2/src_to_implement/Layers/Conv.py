@@ -159,7 +159,6 @@ class Conv(BaseLayer):
             new_weights.append(all_kernels)
         new_weights = np.array(new_weights)
 
-
         # Up sampling error tensor to fixed the stride downsampling
         up_sampled_err_arr = []
         for batch_ind in range(error_tensor.shape[0]):
@@ -171,28 +170,36 @@ class Conv(BaseLayer):
 
                     for err_row in range(err_img.shape[-2]):
                         for err_col in range(err_img.shape[-1]):
-                            new_zero_arr[err_row*self.stride_shape[0], err_col*self.stride_shape[1]] = err_img[err_channel, err_row, err_col]
+                            new_zero_arr[
+                                err_row * self.stride_shape[0],
+                                err_col * self.stride_shape[1],
+                            ] = err_img[err_channel, err_row, err_col]
                     new_channel_arr.append(new_zero_arr)
-                
+
                 elif len(self.convolution_shape) == 2:
                     new_zero_arr = np.zeros((self.input_width))
 
                     for err_col in range(err_img.shape[-1]):
-                        new_zero_arr[err_col*self.stride_shape[0]] = err_img[err_channel, err_col]
+                        new_zero_arr[err_col * self.stride_shape[0]] = err_img[
+                            err_channel, err_col
+                        ]
                     new_channel_arr.append(new_zero_arr)
-            
+
             up_sampled_err_arr.append(new_channel_arr)
         up_sampled_err_arr = np.array(up_sampled_err_arr)
-        
 
         # Calculating Previous error tensor E(n-1)
         previous_err_tensor = []
         for batch_ind in range(error_tensor.shape[0]):
             error_channel = []
             for channel in range(self.convolution_shape[0]):
-                convolve_err = signal.convolve(up_sampled_err_arr[batch_ind], np.flip(new_weights[channel],0), mode='same')
+                convolve_err = signal.convolve(
+                    up_sampled_err_arr[batch_ind],
+                    np.flip(new_weights[channel], 0),
+                    mode="same",
+                )
                 if self.num_kernels <= 2:
-                    error_channel.append(convolve_err[self.num_kernels-1])
+                    error_channel.append(convolve_err[self.num_kernels - 1])
                 else:
                     error_channel.append(convolve_err[self.num_kernels // 2])
             previous_err_tensor.append(error_channel)
@@ -210,18 +217,36 @@ class Conv(BaseLayer):
                 new_channel_arr = []
                 for channel in range(self.convolution_shape[0]):
                     if len(self.convolution_shape) == 3:
-                        padding_height = self.convolution_shape[1]//2
-                        padding_width = self.convolution_shape[2]//2
-                        padded_input = np.pad(self.input_tensor[batch_ind, channel], ((padding_height, padding_height), (padding_width, padding_width)))
-                        output = signal.correlate2d(padded_input, up_sampled_err_arr[batch_ind][kernel], mode='valid')
-                        output = output[:self.weights.shape[2], :self.weights.shape[3]]
+                        padding_height = self.convolution_shape[1] // 2
+                        padding_width = self.convolution_shape[2] // 2
+                        padded_input = np.pad(
+                            self.input_tensor[batch_ind, channel],
+                            (
+                                (padding_height, padding_height),
+                                (padding_width, padding_width),
+                            ),
+                        )
+                        output = signal.correlate2d(
+                            padded_input,
+                            up_sampled_err_arr[batch_ind][kernel],
+                            mode="valid",
+                        )
+                        output = output[
+                            : self.weights.shape[2], : self.weights.shape[3]
+                        ]
                         new_channel_arr.append(output)
                     elif len(self.convolution_shape) == 2:
                         channel_array = self.input_tensor[batch_ind, channel]
                         if self.stride_shape[0] == 1:
-                            output = ndimage.correlate1d(channel_array, weights=err_img[kernel])
+                            output = ndimage.correlate1d(
+                                channel_array, weights=err_img[kernel]
+                            )
                         else:
-                            output = signal.correlate2d(channel_array.reshape(-1,1), up_sampled_err_arr[batch_ind][kernel].reshape(-1,1), mode='valid')[:,0]
+                            output = signal.correlate2d(
+                                channel_array.reshape(-1, 1),
+                                up_sampled_err_arr[batch_ind][kernel].reshape(-1, 1),
+                                mode="valid",
+                            )[:, 0]
                         new_channel_arr.append(output)
 
                 new_kernel_arr.append(new_channel_arr)
@@ -231,14 +256,18 @@ class Conv(BaseLayer):
             new_kernel_arr = np.array(new_kernel_arr)
             self.gradient_bias = np.add(self.gradient_bias, error_bias)
             self.gradient_weights = np.add(self.gradient_weights, new_kernel_arr)
-        
+
         # Update weight and bias
         if self.optimizer:
-            self.weights = self.weights_optimizer.calculate_update(self.weights, self.gradient_weights)
-            self.bias = self.bias_optimizer.calculate_update(self.bias, self.gradient_bias)
+            self.weights = self.weights_optimizer.calculate_update(
+                self.weights, self.gradient_weights
+            )
+            self.bias = self.bias_optimizer.calculate_update(
+                self.bias, self.gradient_bias
+            )
 
         return previous_err_tensor
-    
+
     @property
     def gradient_bias(self) -> np.ndarray:
         return self._gradient_bias

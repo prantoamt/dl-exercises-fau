@@ -77,7 +77,7 @@ class Xavier(Initializer):
 class He(Initializer):
     def __init__(self) -> None:
         super().__init__()
-    
+
     def initialize(self, weights_shape: Tuple, fan_in: int, fan_out: int) -> np.ndarray:
         """
         Initializes weights with random numbers that belongs to

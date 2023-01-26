@@ -14,7 +14,9 @@ class Optimizer(ABC):
     """
 
     @abstractmethod
-    def calculate_update(weight_tensor: np.ndarray, gradient_tensor: np.ndarray) -> np.ndarray:
+    def calculate_update(
+        weight_tensor: np.ndarray, gradient_tensor: np.ndarray
+    ) -> np.ndarray:
         pass
 
 
@@ -22,7 +24,9 @@ class Sgd(Optimizer):
     def __init__(self, learning_rate: float) -> None:
         self.learning_rate = learning_rate
 
-    def calculate_update(self, weight_tensor: np.ndarray, gradient_tensor: np.ndarray) -> np.ndarray:
+    def calculate_update(
+        self, weight_tensor: np.ndarray, gradient_tensor: np.ndarray
+    ) -> np.ndarray:
         return weight_tensor - (self.learning_rate * gradient_tensor)
 
 
@@ -37,7 +41,9 @@ class SgdWithMomentum(Optimizer):
         self.momentum_rate = momentum_rate
         self.v_k = 0  ## The initial momentum is ZERO
 
-    def calculate_update(self, weight_tensor: np.ndarray, gradient_tensor: np.ndarray) -> np.ndarray:
+    def calculate_update(
+        self, weight_tensor: np.ndarray, gradient_tensor: np.ndarray
+    ) -> np.ndarray:
         """
         @ Params:
             weight_tensor: old weight tensor -> np.ndarray
@@ -50,7 +56,9 @@ class SgdWithMomentum(Optimizer):
             gradient(k) denotes to the gradient of k's iteration.
             Assume the very first momentum v(0) is ZERO
         """
-        self.v_k = (self.momentum_rate * self.v_k) + (self.learning_rate * gradient_tensor)
+        self.v_k = (self.momentum_rate * self.v_k) + (
+            self.learning_rate * gradient_tensor
+        )
         w_k_plus_one = weight_tensor - self.v_k
 
         return w_k_plus_one
@@ -66,7 +74,9 @@ class Adam(Optimizer):
         self.r_k = 0
         self.iter = 1
 
-    def calculate_update(self, weight_tensor: np.ndarray, gradient_tensor: np.ndarray) -> np.ndarray:
+    def calculate_update(
+        self, weight_tensor: np.ndarray, gradient_tensor: np.ndarray
+    ) -> np.ndarray:
         """
         @ Params:
             weight_tensor: old weight tensor -> np.ndarray
@@ -89,7 +99,9 @@ class Adam(Optimizer):
         v_k_hat = self.v_k / (1.0 - self.mu**self.iter)
         r_k_hat = self.r_k / (1.0 - self.rho**self.iter)
 
-        w_k_plus_one = weight_tensor - self.learning_rate * (v_k_hat / (np.sqrt(r_k_hat) + np.finfo(np.float64).eps))
+        w_k_plus_one = weight_tensor - self.learning_rate * (
+            v_k_hat / (np.sqrt(r_k_hat) + np.finfo(np.float64).eps)
+        )
         self.iter += 1
-        
+
         return w_k_plus_one
