@@ -24,8 +24,9 @@ license = {text = "MIT"}
 test_ex_0 = "python ./ex_0/src_to_implement_pranto/NumpyTests.py {args}"
 test_ex_1 = "python ./ex_1/src_to_implement/NeuralNetworkTests.py {args}"
 test_ex_2 = "python ./ex_2/src_to_implement/NeuralNetworkTests.py {args}"
-test = {composite = ["test_ex_0 Bonus",  "test_ex_1 Bonus", "test_ex_2 Bonus"]}
-test_ci = {composite = ["test_ex_0",  "test_ex_1", "test_ex_2"]}
+test_ex_4 = "python ./ex_4/src_to_implement/python3 PytorchChallengeTests.py {args}"
+test = {composite = ["test_ex_0 Bonus",  "test_ex_1 Bonus", "test_ex_2 Bonus", "test_ex_4 Bonus"]}
+test_ci = {composite = ["test_ex_0",  "test_ex_1", "test_ex_2, test_ex_4"]}
 format = "black ."
 
 [build-system]

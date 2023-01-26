@@ -63,8 +63,8 @@ class TestDataset(unittest.TestCase):
             self.assertEqual(x.shape[1], 300, "Your samples are not correctly shaped")
             self.assertEqual(x.shape[2], 300, "Your samples are not correctly shaped")
 
-            # y = y[0].cpu().numpy()
-            # self.assertEqual(y.size, 2)
+            y = y[0].cpu().numpy()
+            self.assertEqual(y.size, 2)
 
             break
 
