@@ -38,7 +38,9 @@ class ChallengeDataset(Dataset):
             [
                 tv.transforms.ToTensor(),
                 tv.transforms.Normalize(
-                    torch.tensor(train_mean), torch.tensor(train_std), inplace=True
+                    mean=torch.tensor(train_mean),
+                    std=torch.tensor(train_std),
+                    inplace=True,
                 ),
             ]
         )
