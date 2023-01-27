@@ -49,7 +49,7 @@ class Trainer:
               dynamic_axes={'input' : {0 : 'batch_size'},    # variable lenght axes
                             'output' : {0 : 'batch_size'}})
             
-    def train_step(self, x, y):
+    def train_step(self, x: t.tensor, y: t.tensor) -> t.tensor:
         # perform following steps:
         # -reset the gradients. By default, PyTorch accumulates (sums up) gradients when backward() is called. This behavior is not required here, so you need to ensure that all the gradients are zero before calling the backward.
         # -propagate through the network
@@ -58,6 +58,12 @@ class Trainer:
         # -update weights
         # -return the loss
         #TODO
+        self._optim.zero_grad()
+        output = self._model(x)
+        loss = self._crit(output, y)
+        loss.backward()
+        self._optim.step()
+        return loss
         
         
     
@@ -67,6 +73,7 @@ class Trainer:
         # propagate through the network and calculate the loss and predictions
         # return the loss and the predictions
         #TODO
+        pass
         
     def train_epoch(self):
         # set training mode
@@ -75,6 +82,7 @@ class Trainer:
         # perform a training step
         # calculate the average loss for the epoch and return it
         #TODO
+        pass
     
     def val_test(self):
         # set eval mode. Some layers have different behaviors during training and testing (for example: Dropout, BatchNorm, etc.). To handle those properly, you'd want to call model.eval()
@@ -86,6 +94,7 @@ class Trainer:
         # calculate the average loss and average metrics of your choice. You might want to calculate these metrics in designated functions
         # return the loss and print the calculated metrics
         #TODO
+        pass
         
     
     def fit(self, epochs=-1):

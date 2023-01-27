@@ -304,6 +304,12 @@ dependencies = [
 ]
 
 [[package]]
+name = "tqdm"
+version = "4.36.0"
+requires_python = ">=2.6, !=3.0.*, !=3.1.*"
+summary = "Fast, Extensible Progress Meter"
+
+[[package]]
 name = "typing-extensions"
 version = "4.4.0"
 requires_python = ">=3.7"
@@ -317,7 +323,7 @@ summary = "HTTP library with thread-safe connection pooling, file post, and more
 
 [metadata]
 lock_version = "4.1"
-content_hash = "sha256:6eab23f7e97b84e66cd71b5adcd08b6eb6af71e342ad10440f04cc5de0745cda"
+content_hash = "sha256:50fd8a568f0c606585c4ad050e007475cda63e5cc6cdf18a4d5a43d5e424c132"
 
 [metadata.files]
 "black 22.10.0" = [
@@ -992,6 +998,10 @@ content_hash = "sha256:6eab23f7e97b84e66cd71b5adcd08b6eb6af71e342ad10440f04cc5de
     {url = "https://files.pythonhosted.org/packages/c1/b0/f238bcbbd99a044ce6b8f6e592ee47e0cdf3dfa155c127460a45a2586cad/torchvision-0.14.1-cp39-cp39-macosx_11_0_arm64.whl", hash = "sha256:758b20d079e810b4740bd60d1eb16e49da830e3360f9be379eb177ee221fa5d4"},
     {url = "https://files.pythonhosted.org/packages/cd/d4/66de471d47a293dd52c254deff0081d7c9b8d1304b911bb3cffaa1fa956b/torchvision-0.14.1-cp310-cp310-manylinux1_x86_64.whl", hash = "sha256:6d7b35653113664ea3fdcb71f515cfbf29d2fe393000fd8aaff27a1284de6908"},
     {url = "https://files.pythonhosted.org/packages/f3/f8/c4601983a1ccb75588e77de2fd3932170cc24bdf5839565af839e9fa9729/torchvision-0.14.1-cp37-cp37m-macosx_10_9_x86_64.whl", hash = "sha256:fb7a793fd33ce1abec24b42778419a3fb1e3159d7dfcb274a3ca8fb8cbc408dc"},
+]
+"tqdm 4.36.0" = [
+    {url = "https://files.pythonhosted.org/packages/7a/6e/aee64848bfa1d901f4b7ee16b9e691e109e803937c09e9b3cc2f69de8a79/tqdm-4.36.0.tar.gz", hash = "sha256:74d40d49cab95a93735323e450161f1e580dac42b25bf39770f6e3501d36ebfb"},
+    {url = "https://files.pythonhosted.org/packages/95/6b/fe4304220f7a9800f820a6379ee9b1b87128ae8a9703cc3e1ec5171e12ac/tqdm-4.36.0-py2.py3-none-any.whl", hash = "sha256:4c34f077399736e5dbf403183b5f0f1bda46e06433a3f93812386a9d56b28004"},
 ]
 "typing-extensions 4.4.0" = [
     {url = "https://files.pythonhosted.org/packages/0b/8e/f1a0a5a76cfef77e1eb6004cb49e5f8d72634da638420b9ea492ce8305e8/typing_extensions-4.4.0-py3-none-any.whl", hash = "sha256:16fa4864408f655d35ec496218b85f79b3437c829e93320c7c9215ccfd92489e"},
