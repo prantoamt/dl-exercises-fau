@@ -41,9 +41,6 @@ class ChallengeDataset(Dataset):
         train_transform = tv.transforms.Compose(
             [
                 tv.transforms.ToTensor(),
-                tv.transforms.RandomHorizontalFlip(),
-                tv.transforms.RandomVerticalFlip(),
-                tv.transforms.RandomRotation(degrees=20),
                 tv.transforms.Normalize(
                     mean=torch.tensor(train_mean),
                     std=torch.tensor(train_std),

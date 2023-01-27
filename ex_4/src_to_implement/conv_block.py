@@ -2,12 +2,12 @@
 from typing import Optional, Union
 
 # Third party imports
-from torch import nn
+import torch
 
 # Self imports
 
 
-class ConvBlock(nn.Module):
+class ConvBlock(torch.nn.Module):
     def __init__(
         self,
         in_channels: int,
@@ -16,23 +16,25 @@ class ConvBlock(nn.Module):
         stride: Optional[int] = 1,
         padding: Optional[int] = 0,
         max_pool: Optional[Union[tuple, int]] = None,
-        skip_conn: Optional[bool] = False,
     ) -> None:
         super().__init__()
-        self.skip_conn = skip_conn
-        self.conv = nn.Conv2d(
+        self.conv = torch.nn.Conv2d(
             in_channels=in_channels,
             out_channels=out_channels,
             kernel_size=kernel_size,
             stride=stride,
             padding=padding,
         )
-        self.batch = nn.BatchNorm2d(num_features=out_channels)
-        self.relu = nn.ReLU(inplace=True)
-        self.max_pool = nn.MaxPool2d(max_pool) if max_pool else None
+        self.batch_norm = torch.nn.BatchNorm2d(num_features=out_channels)
+        self.relu = torch.nn.ReLU(inplace=True)
+        self.max_pool = (
+            torch.nn.MaxPool2d(kernel_size=max_pool[0], stride=max_pool[1])
+            if max_pool != None
+            else None
+        )
 
-    def forward(self, x) -> None:
+    def forward(self, x, res: Optional[torch.tensor] = None) -> torch.tensor:
         x = self.conv(x)
-        x = self.batch(x) + x if self.skip_conn else self.batch(x)
+        x = self.batch_norm(x) + res if res != None else self.batch_norm(x)
         x = self.max_pool(self.relu(x)) if self.max_pool else self.relu(x)
         return x
