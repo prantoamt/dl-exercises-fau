@@ -30,7 +30,7 @@ class ResNet(nn.Module):
                 stride=1,
                 padding=0,
                 max_pool=None,
-                skip_conn=True,
+                skip_conn=False,
             ),
             conv_block_2=ConvBlock(
                 in_channels=64,
@@ -50,7 +50,7 @@ class ResNet(nn.Module):
                 stride=2,
                 padding=0,
                 max_pool=None,
-                skip_conn=True,
+                skip_conn=False,
             ),
             conv_block_2=ConvBlock(
                 in_channels=64,
@@ -70,7 +70,7 @@ class ResNet(nn.Module):
                 stride=2,
                 padding=0,
                 max_pool=None,
-                skip_conn=True,
+                skip_conn=False,
             ),
             conv_block_2=ConvBlock(
                 in_channels=128,
@@ -90,7 +90,7 @@ class ResNet(nn.Module):
                 stride=2,
                 padding=0,
                 max_pool=None,
-                skip_conn=True,
+                skip_conn=False,
             ),
             conv_block_2=ConvBlock(
                 in_channels=356,
@@ -110,8 +110,8 @@ class ResNet(nn.Module):
         self.conv_block = conv_block
         self.res_block_1 = res_block_1
         self.res_block_2 = res_block_2
-        # self.res_block_3 = res_block_3
-        # self.res_block_4 = res_block_4
+        self.res_block_3 = res_block_3
+        self.res_block_4 = res_block_4
         # an affine operation: y = Wx + b
         self.flatten = flatten
         self.fully_connected = fully_connected

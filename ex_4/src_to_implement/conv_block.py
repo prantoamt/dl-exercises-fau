@@ -34,5 +34,5 @@ class ConvBlock(nn.Module):
     def forward(self, x) -> None:
         x = self.conv(x)
         x = self.batch(x) + x if self.skip_conn else self.batch(x)
-        x = self.max_pool((self.relu(x))) if self.max_pool else self.relu(x)
+        x = self.max_pool(self.relu(x)) if self.max_pool else self.relu(x)
         return x
