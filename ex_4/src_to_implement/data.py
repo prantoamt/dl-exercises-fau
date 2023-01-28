@@ -1,4 +1,3 @@
-from typing import Optional
 import pandas as pd
 from torch.utils.data import Dataset
 import torch
@@ -38,7 +37,7 @@ class ChallengeDataset(Dataset):
         )
         image = imread(image_path)
         image = gray2rgb(image=image)
-        train_transform = tv.transforms.Compose(
+        transform = tv.transforms.Compose(
             [
                 tv.transforms.ToTensor(),
                 tv.transforms.Normalize(
@@ -48,26 +47,7 @@ class ChallengeDataset(Dataset):
                 ),
             ]
         )
-        image = train_transform(image)
+        image = transform(image)
         if self._transform:
             image = self._transform(image)
-        return image, image_label
-
-
-def __show_data(
-    data_loader: torch.utils.data.DataLoader, num_of_data: Optional[int] = 6
-):
-    for images, image_names in data_loader:
-        fig, ax = plt.subplots(figsize=(12, 12))
-        ax.set_xticks([])
-        ax.set_yticks([])
-        ax.imshow(tv.utils.make_grid(images[:64], nrow=8).permute(1, 2, 0))
-        break
-    plt.show()
-
-
-csv_data = pd.read_csv("ex_4/src_to_implement/data.csv", sep=";", skiprows=1)
-cd = ChallengeDataset(csv_data, "train")
-val_data = torch.utils.data.DataLoader(cd, batch_size=100)
-
-__show_data(val_data)
+        return image.to(torch.float32), image_label.to(torch.float32)
