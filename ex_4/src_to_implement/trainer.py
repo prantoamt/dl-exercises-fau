@@ -1,6 +1,7 @@
 import torch as t
-from sklearn.metrics import f1_score
+from sklearn.metrics import f1_score, multilabel_confusion_matrix
 from tqdm.autonotebook import tqdm
+import numpy as np
 
 device = t.device("cuda" if t.cuda.is_available() else "cpu")
 
@@ -32,7 +33,7 @@ class Trainer:
     def save_checkpoint(self, epoch):
         t.save(
             {"state_dict": self._model.state_dict()},
-            "checkpoints/checkpoint_{:03d}.ckp".format(epoch),
+            "ex_4/checkpoints/checkpoint_{:03d}.ckp".format(epoch),
         )
 
     def restore_checkpoint(self, epoch_n):
@@ -72,23 +73,16 @@ class Trainer:
         # -update weights
         # -return the loss
         self._optim.zero_grad()
-        prediction, y = self._model(x).to(t.float32), y.to(t.float32)
+        prediction = self._model(x).to(t.float32)
+        y = y.to(t.float32)
         loss = self._crit(prediction, y)
         loss.backward()
         self._optim.step()
-        return loss.detach().numpy()
-
-    def val_test_step(self, x: t.tensor, y: t.tensor) -> t.tensor:
-
-        # predict
-        # propagate through the network and calculate the loss and predictions
-        predictions = self._model(x)
-        loss = self._crit(predictions, y)
-        # return the loss and the predictions
-        return loss.detach().numpy(), predictions.detach().numpy()
+        return loss.item()
 
     def train_epoch(self):
         # set training mode
+        self._model.train()
         # iterate through the training set
         losses = []
         for x, y in self._train_dl:
@@ -100,6 +94,15 @@ class Trainer:
         # calculate the average loss for the epoch and return it
         return sum(losses) / len(losses)
 
+    def val_test_step(self, x: t.tensor, y: t.tensor) -> t.tensor:
+
+        # predict
+        # propagate through the network and calculate the loss and predictions
+        predictions = self._model(x)
+        loss = self._crit(predictions, y)
+        # return the loss and the predictions
+        return loss.item(), predictions.cpu().detach().numpy()
+
     def val_test(self):
         # set eval mode.
         self._model.eval()
@@ -107,8 +110,10 @@ class Trainer:
         # To handle those properly, you'd want to call model.eval()
         # disable gradient computation. Since you don't need to update the weights during testing, gradients aren't required anymore.
         with t.no_grad():
-            # iterate through the validation set
+            y_predicted = []
+            y_true = []
             losses = []
+            # iterate through the validation set
             for x, y in self._val_test_dl:
                 # transfer the batch to the gpu if given
                 x, y = x.to(device), y.to(device)
@@ -116,24 +121,35 @@ class Trainer:
                 loss, predictions = self.val_test_step(x=x, y=y)
                 # save the predictions and the labels for each batch
                 # calculate the average loss and average metrics of your choice.
+                predictions = np.rint(predictions)
+                y = y.cpu().detach().numpy()
+                y_predicted.extend(predictions)
+                y_true.extend(y)
                 losses.append(loss)
                 # You might want to calculate these metrics in designated functions
-                # return the loss and print the calculated metrics
+            print(
+                "F1 Score: ",
+                f1_score(y_true=y_true, y_pred=y_predicted, average="macro"),
+                end=" ==> ",
+            )
+            # print("Confusion matrix: ", multilabel_confusion_matrix(y_true=y_true, y_pred=y_predicted))
+
+        # return the loss and print the calculated metrics
         return sum(losses) / len(losses)
 
     def fit(self, epochs=-1):
         assert self._early_stopping_patience > 0 or epochs > 0
         # create a list for the train and validation losses, and create a counter for the epoch
-        epoch_counter = 1
+        epoch_counter = 0
         training_losses = []
         validation_losses = []
 
         while True:
-            print("Epoch: ", epoch_counter)
             # stop by epoch number
             if epoch_counter == epochs:
                 break
             epoch_counter += 1
+            print("Epoch: ", epoch_counter, end=" ==> ")
             # train for a epoch and then calculate the loss and metrics on the validation set
             # append the losses to the respective lists
             train_loss = self.train_epoch()
@@ -143,10 +159,18 @@ class Trainer:
             print(
                 "Trainging Loss: ",
                 train_loss,
+                " ==> ",
                 "Validation loss: ",
                 validation_loss,
+                end="\n",
             )
             # use the save_checkpoint function to save the model (can be restricted to epochs with improvement)
+            # self.save_checkpoint(epoch_counter)
             # check whether early stopping should be performed using the early stopping criterion and stop if so
+            if (
+                epoch_counter >= self._early_stopping_patience
+                and validation_losses[-1] - validation_loss == 0
+            ):
+                break
             # return the losses for both training and validation
         return training_losses, validation_losses

@@ -48,21 +48,21 @@ res_model = model.ResNet()
 # set up the optimizer (see t.optim)
 # create an object of type Trainer and set its early stopping criterion
 criterion = torch.nn.BCELoss()
-optimizer = torch.optim.SGD(res_model.parameters(), lr=0.01)
+optimizer = torch.optim.SGD(res_model.parameters(), momentum=0.009, lr=0.001)
 trainer = Trainer(
     model=res_model,
     crit=criterion,
     optim=optimizer,
     train_dl=train_loader,
     val_test_dl=validation_loader,
-    cuda=False,
-    early_stopping_patience=5,
+    cuda=True,
+    early_stopping_patience=80,
 )
 
 # go, go, go... call fit on trainer
-res = trainer.fit(epochs=10)
+res = trainer.fit(epochs=100)
 
-# # plot the results
+# plot the results
 plt.plot(np.arange(len(res[0])), res[0], label="train loss")
 plt.plot(np.arange(len(res[1])), res[1], label="val loss")
 plt.yscale("log")
