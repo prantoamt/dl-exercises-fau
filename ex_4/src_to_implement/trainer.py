@@ -1,5 +1,5 @@
 import torch as t
-from sklearn.metrics import f1_score, multilabel_confusion_matrix
+from sklearn.metrics import f1_score, multilabel_confusion_matrix, accuracy_score
 from tqdm.autonotebook import tqdm
 import numpy as np
 
@@ -131,6 +131,11 @@ class Trainer:
             print(
                 "F1 Score: ",
                 self.f1_score,
+                end=" ==> ",
+            )
+            print(
+                "Validation accuracy: ",
+                accuracy_score(y_true=y_true, y_pred=y_predicted),
                 end=" ==> ",
             )
             # print("Confusion matrix: ", multilabel_confusion_matrix(y_true=y_true, y_pred=y_predicted))

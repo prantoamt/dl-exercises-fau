@@ -56,9 +56,8 @@ trainer = Trainer(
     train_dl=train_loader,
     val_test_dl=validation_loader,
     cuda=True,
-    early_stopping_patience=80,
+    early_stopping_patience=100,
 )
-
 # go, go, go... call fit on trainer
 res = trainer.fit(epochs=500)
 
