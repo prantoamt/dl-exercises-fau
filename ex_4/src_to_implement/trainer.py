@@ -167,7 +167,7 @@ class Trainer:
                 end="\n",
             )
             # use the save_checkpoint function to save the model (can be restricted to epochs with improvement)
-            if self.f1_score > 80 and self.f1_score > self.prev_f1_score:
+            if self.f1_score > 0.80 and self.f1_score > self.prev_f1_score:
                 self.save_checkpoint(epoch_counter)
             # check whether early stopping should be performed using the early stopping criterion and stop if so
             if (
