@@ -22,7 +22,7 @@ class Trainer:
         self._train_dl = train_dl
         self._val_test_dl = val_test_dl
         self._cuda = cuda
-        self.prev_f1_score = 0
+        self.tar_f1_score = 0.65
         self.f1_score = 0
         self._early_stopping_patience = early_stopping_patience
 
@@ -127,7 +127,6 @@ class Trainer:
                 y_true.extend(y)
                 losses.append(loss)
                 # You might want to calculate these metrics in designated functions
-                self.prev_f1_score = self.f1_score
                 self.f1_score = f1_score(y_true=y_true, y_pred=y_predicted, average="macro")
             print(
                 "F1 Score: ",
@@ -167,7 +166,8 @@ class Trainer:
                 end="\n",
             )
             # use the save_checkpoint function to save the model (can be restricted to epochs with improvement)
-            if self.f1_score > 0.80 and self.f1_score > self.prev_f1_score:
+            if self.f1_score > self.tar_f1_score:
+                self.tar_f1_score = self.f1_score
                 self.save_checkpoint(epoch_counter)
             # check whether early stopping should be performed using the early stopping criterion and stop if so
             if (
