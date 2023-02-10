@@ -103,6 +103,8 @@ res_block_4 = ResBlock(
 
 flatten = nn.Flatten(start_dim=1)
 
-fully_connected = nn.Linear(in_features=512 * 10 * 10, out_features=2)
+fully_connected = nn.Linear(in_features=512, out_features=2)
 
 sigmoid = nn.Sigmoid()
+
+dropout = nn.Dropout(p=0.2)

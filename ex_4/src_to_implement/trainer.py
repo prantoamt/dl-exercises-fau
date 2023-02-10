@@ -5,7 +5,6 @@ import numpy as np
 
 device = t.device("cuda" if t.cuda.is_available() else "cpu")
 
-
 class Trainer:
     def __init__(
         self,
@@ -23,7 +22,7 @@ class Trainer:
         self._train_dl = train_dl
         self._val_test_dl = val_test_dl
         self._cuda = cuda
-
+        self.f1_score = 0
         self._early_stopping_patience = early_stopping_patience
 
         if cuda:
@@ -127,9 +126,10 @@ class Trainer:
                 y_true.extend(y)
                 losses.append(loss)
                 # You might want to calculate these metrics in designated functions
+                self.f1_score = f1_score(y_true=y_true, y_pred=y_predicted, average="macro")
             print(
                 "F1 Score: ",
-                f1_score(y_true=y_true, y_pred=y_predicted, average="macro"),
+                self.f1_score,
                 end=" ==> ",
             )
             # print("Confusion matrix: ", multilabel_confusion_matrix(y_true=y_true, y_pred=y_predicted))
@@ -165,11 +165,12 @@ class Trainer:
                 end="\n",
             )
             # use the save_checkpoint function to save the model (can be restricted to epochs with improvement)
-            # self.save_checkpoint(epoch_counter)
+            if self.f1_score > 80:
+                self.save_checkpoint(epoch_counter)
             # check whether early stopping should be performed using the early stopping criterion and stop if so
             if (
                 epoch_counter >= self._early_stopping_patience
-                and validation_losses[-1] - validation_loss == 0
+                and validation_losses[-2] - validation_losses[-1] == 0
             ):
                 break
             # return the losses for both training and validation
