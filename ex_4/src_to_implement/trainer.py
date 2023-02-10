@@ -131,14 +131,6 @@ class Trainer:
             print(
                 "F1 Score: ",
                 self.f1_score,
-<<<<<<< HEAD
-                end=" ==> ",
-            )
-            print(
-                "Validation accuracy: ",
-                accuracy_score(y_true=y_true, y_pred=y_predicted),
-=======
->>>>>>> 4f403e0 (model updated)
                 end=" ==> ",
             )
             # print("Confusion matrix: ", multilabel_confusion_matrix(y_true=y_true, y_pred=y_predicted))
